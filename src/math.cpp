@@ -188,8 +188,6 @@ extern "C" Sass_Function_List ADDCALL libsass_load_functions()
 // create a custom header to define to variables
 Sass_Import_List custom_header(const char* cur_path, Sass_Importer_Entry cb, struct Sass_Compiler* comp)
 {
-  // get the cookie from importer descriptor
-  void* cookie = sass_importer_get_cookie(cb);
   // create a list to hold our import entries
   Sass_Import_List incs = sass_make_import_list(1);
   // create our only import entry (must make copy)
