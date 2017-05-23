@@ -6,7 +6,7 @@ set(CMAKE_MACOSX_RPATH 1)
 
 if (MINGW)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -static-libgcc")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc")
     set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "${CMAKE_SHARED_LIBRARY_LINK_C_FLAGS} -static-libgcc")
     set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS} -static-libstdc++")
 endif()
@@ -29,7 +29,6 @@ set(LIBSASS_INCLUDE_DIR "${LIBSASS_DIR}/include" CACHE PATH "Path to libsass inc
 
 link_directories("${LIBSASS_LIBRARY_DIR}")
 include_directories("${LIBSASS_INCLUDE_DIR}")
-# include_directories("vendor")
 
 find_library(SASS_LIBRARY NAMES sass
     HINTS "${CMAKE_CURRENT_SOURCE_DIR}/../lib"
