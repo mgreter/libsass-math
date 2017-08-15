@@ -4,9 +4,9 @@ Native libsass plugin adding trigonometric and mathematical functions.
 
 ## Building
 
-You need to have [libsass] [1] already [compiled] [2] or [installed] [3] as a
+You need to have [libsass][1] already [compiled][2] or [installed][3] as a
 shared library (inclusive header files). It is then compiled via `cmake`. See
-this example to compile it on windows via [MinGW] [4] Compiler Suite:
+this example to compile it on windows via [MinGW][4] Compiler Suite:
 
 ```cmd
 git clone https://github.com/sass/libsass.git
@@ -24,7 +24,7 @@ You may define `LIBSASS_INCLUDE_DIR` and `LIBSASS_LIBRARY_DIR` separately!
 The following globals are available when you import the math plugin.
 - `$E` - Euler's number (used for the natural logarithm).
 - `$PI` - The ratio of a circle's circumference to its diameter.
-- `$TAU` - The double of pi, because [Pi is wrong] [5].
+- `$TAU` - The double of pi, because [Pi is wrong][5].
 
 The following functions are available when you import the math plugin.
 
@@ -75,7 +75,7 @@ The following functions are available when you import the math plugin.
 
 ## Copyright
 
-© 2015 [Marcel Greter] [6]
+© 2015 [Marcel Greter][6]
 
 [1]: https://github.com/sass/libsass
 [2]: https://github.com/sass/libsass/wiki/Building-Libsass
