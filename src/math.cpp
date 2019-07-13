@@ -192,9 +192,9 @@ Sass_Import_List custom_header(const char* cur_path, Sass_Importer_Entry cb, str
   Sass_Import_List incs = sass_make_import_list(1);
   // create our only import entry (must make copy)
   incs[0] = sass_make_import_entry("[math]", strdup(
-    "$E: 2.718281828459045235360287471352 !global;\n"
-    "$PI: 3.141592653589793238462643383275 !global;\n"
-    "$TAU: 6.283185307179586476925286766559 !global;\n"
+    "$E: 2.718281828459045235360287471352;\n"
+    "$PI: 3.141592653589793238462643383275;\n"
+    "$TAU: 6.283185307179586476925286766559;\n"
   ), 0);
   // return imports
   return incs;
