@@ -34,15 +34,15 @@ inline double acoth(double x) { return 1.0 / atanh(x); }
 
 // most functions are very simple
 #define IMPLEMENT_1_ARG_FN(fn) \
-union Sass_Value* fn_##fn(const union Sass_Value* s_args, Sass_Function_Entry cb, struct Sass_Compiler* comp) \
+struct SassValue* fn_##fn(struct SassValue* s_args, struct SassCompiler* comp) \
 { \
   if (!sass_value_is_list(s_args)) { \
     return sass_make_error("Invalid arguments for " #fn); \
   } \
-  if (sass_list_get_length(s_args) != 1) { \
+  if (sass_list_get_size(s_args) != 1) { \
     return sass_make_error("Exactly one arguments expected for " #fn); \
   } \
-  const union Sass_Value* inp = sass_list_get_value(s_args, 0); \
+  struct SassValue* inp = sass_list_get_value(s_args, 0); \
   if (!sass_value_is_number(inp)) { \
     return sass_make_error("You must pass a number into " #fn); \
   } \
@@ -97,16 +97,16 @@ IMPLEMENT_1_ARG_FN(acoth)
 
 // so far only pow has two arguments
 #define IMPLEMENT_2_ARG_FN(fn) \
-union Sass_Value* fn_##fn(const union Sass_Value* s_args, Sass_Function_Entry cb, struct Sass_Compiler* comp) \
+struct SassValue* fn_##fn(struct SassValue* s_args, struct SassCompiler* comp) \
 { \
   if (!sass_value_is_list(s_args)) { \
     return sass_make_error("Invalid arguments for" #fn); \
   } \
-  if (sass_list_get_length(s_args) != 2) { \
+  if (sass_list_get_size(s_args) != 2) { \
     return sass_make_error("Exactly two arguments expected for" #fn); \
   } \
-  const union Sass_Value* value1 = sass_list_get_value(s_args, 0); \
-  const union Sass_Value* value2 = sass_list_get_value(s_args, 1); \
+  struct SassValue* value1 = sass_list_get_value(s_args, 0); \
+  struct SassValue* value2 = sass_list_get_value(s_args, 1); \
   if (!sass_value_is_number(value1) || !sass_value_is_number(value2)) { \
     return sass_make_error("You must pass numbers into" #fn); \
   } \
@@ -128,88 +128,73 @@ extern "C" const char* ADDCALL libsass_get_version() {
   return libsass_version();
 }
 
-// entry point for libsass to request custom functions from plugin
-extern "C" Sass_Function_List ADDCALL libsass_load_functions()
-{
-
-  // create list of all custom functions
-  Sass_Function_List fn_list = sass_make_function_list(33);
-
-  // math/numeric functions
-  sass_function_set_list_entry(fn_list,  0, sass_make_function("sign($x)", fn_sign, 0));
-
-  // math/exponentiation functions
-  sass_function_set_list_entry(fn_list,  1, sass_make_function("exp($x)", fn_exp, 0));
-  sass_function_set_list_entry(fn_list,  2, sass_make_function("log($x)", fn_log, 0));
-  sass_function_set_list_entry(fn_list,  3, sass_make_function("log2($x)", fn_log2, 0));
-  sass_function_set_list_entry(fn_list,  4, sass_make_function("log10($x)", fn_log10, 0));
-  sass_function_set_list_entry(fn_list,  5, sass_make_function("sqrt($x)", fn_sqrt, 0));
-  sass_function_set_list_entry(fn_list,  6, sass_make_function("cbrt($x)", fn_cbrt, 0));
-  sass_function_set_list_entry(fn_list,  7, sass_make_function("fact($x)", fn_fact, 0));
-  sass_function_set_list_entry(fn_list,  8, sass_make_function("pow($base, $power)", fn_pow, 0));
-
-  // math/trigonometry
-  sass_function_set_list_entry(fn_list,  9, sass_make_function("sin($x)", fn_sin, 0));
-  sass_function_set_list_entry(fn_list, 10, sass_make_function("cos($x)", fn_cos, 0));
-  sass_function_set_list_entry(fn_list, 11, sass_make_function("tan($x)", fn_tan, 0));
-  sass_function_set_list_entry(fn_list, 12, sass_make_function("csc($x)", fn_csc, 0));
-  sass_function_set_list_entry(fn_list, 13, sass_make_function("sec($x)", fn_sec, 0));
-  sass_function_set_list_entry(fn_list, 14, sass_make_function("cot($x)", fn_cot, 0));
-
-  // math/hyperbolic
-  sass_function_set_list_entry(fn_list, 15, sass_make_function("sinh($x)", fn_sinh, 0));
-  sass_function_set_list_entry(fn_list, 16, sass_make_function("cosh($x)", fn_cosh, 0));
-  sass_function_set_list_entry(fn_list, 17, sass_make_function("tanh($x)", fn_tanh, 0));
-  sass_function_set_list_entry(fn_list, 18, sass_make_function("csch($x)", fn_csch, 0));
-  sass_function_set_list_entry(fn_list, 19, sass_make_function("sech($x)", fn_sech, 0));
-  sass_function_set_list_entry(fn_list, 20, sass_make_function("coth($x)", fn_coth, 0));
-
-  // math/inverse-trigonometry
-  sass_function_set_list_entry(fn_list, 21, sass_make_function("asin($x)", fn_asin, 0));
-  sass_function_set_list_entry(fn_list, 22, sass_make_function("acos($x)", fn_acos, 0));
-  sass_function_set_list_entry(fn_list, 23, sass_make_function("atan($x)", fn_atan, 0));
-  sass_function_set_list_entry(fn_list, 24, sass_make_function("acsc($x)", fn_acsc, 0));
-  sass_function_set_list_entry(fn_list, 25, sass_make_function("asec($x)", fn_asec, 0));
-  sass_function_set_list_entry(fn_list, 26, sass_make_function("acot($x)", fn_acot, 0));
-
-  // math/inverse-hyperbolic
-  sass_function_set_list_entry(fn_list, 27, sass_make_function("asinh($x)", fn_asinh, 0));
-  sass_function_set_list_entry(fn_list, 28, sass_make_function("acosh($x)", fn_acosh, 0));
-  sass_function_set_list_entry(fn_list, 29, sass_make_function("atanh($x)", fn_atanh, 0));
-  sass_function_set_list_entry(fn_list, 30, sass_make_function("acsch($x)", fn_acsch, 0));
-  sass_function_set_list_entry(fn_list, 31, sass_make_function("asech($x)", fn_asech, 0));
-  sass_function_set_list_entry(fn_list, 32, sass_make_function("acoth($x)", fn_acoth, 0));
-
-  // return the list
-  return fn_list;
-
-}
-
 // create a custom header to define to variables
-Sass_Import_List custom_header(const char* cur_path, Sass_Importer_Entry cb, struct Sass_Compiler* comp)
+struct SassImportList* custom_header(const char* cur_path, struct SassImporter* cb, struct SassCompiler* comp)
 {
   // create a list to hold our import entries
-  Sass_Import_List incs = sass_make_import_list(1);
+  struct SassImportList* incs = sass_make_import_list();
   // create our only import entry (must make copy)
-  incs[0] = sass_make_import_entry("[math]", strdup(
-    "$E: 2.718281828459045235360287471352;\n"
-    "$PI: 3.141592653589793238462643383275;\n"
-    "$TAU: 6.283185307179586476925286766559;\n"
-  ), 0);
+  sass_import_list_push(incs, sass_make_import(
+    "[math]", "[math]", sass_copy_c_string(
+      "$E: 2.718281828459045235360287471352;\n"
+      "$PI: 3.141592653589793238462643383275;\n"
+      "$TAU: 6.283185307179586476925286766559;\n"
+    ), 0, SASS_IMPORT_AUTO));
   // return imports
   return incs;
 }
 
-// entry point for libsass to request custom headers from plugin
-extern "C" Sass_Importer_List ADDCALL libsass_load_headers()
+// entry point for libsass to request custom functions from plugin
+extern "C" void ADDCALL libsass_init_plugin(struct SassCompiler* compiler)
 {
-  // allocate a custom function caller
-  Sass_Importer_Entry c_header =
-    sass_make_importer(custom_header, 5000, (void*) 0);
-  // create list of all custom functions
-  Sass_Importer_List imp_list = sass_make_importer_list(1);
-  // put the only function in this plugin to the list
-  sass_importer_set_list_entry(imp_list, 0, c_header);
-  // return the list
-  return imp_list;
+
+  // Add constants via custom headers
+  sass_compiler_add_custom_header(compiler,
+    sass_make_importer(custom_header, 5000, nullptr));
+
+  // math/numeric functions
+  sass_compiler_add_custom_function(compiler, sass_make_function("sign($x)", fn_sign, 0));
+
+  // math/exponentiation functions
+  sass_compiler_add_custom_function(compiler, sass_make_function("exp($x)", fn_exp, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("log($x)", fn_log, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("log2($x)", fn_log2, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("log10($x)", fn_log10, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("sqrt($x)", fn_sqrt, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("cbrt($x)", fn_cbrt, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("fact($x)", fn_fact, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("pow($base, $power)", fn_pow, 0));
+
+  // math/trigonometry
+  sass_compiler_add_custom_function(compiler, sass_make_function("sin($x)", fn_sin, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("cos($x)", fn_cos, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("tan($x)", fn_tan, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("csc($x)", fn_csc, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("sec($x)", fn_sec, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("cot($x)", fn_cot, 0));
+
+  // math/hyperbolic
+  sass_compiler_add_custom_function(compiler, sass_make_function("sinh($x)", fn_sinh, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("cosh($x)", fn_cosh, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("tanh($x)", fn_tanh, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("csch($x)", fn_csch, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("sech($x)", fn_sech, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("coth($x)", fn_coth, 0));
+
+  // math/inverse-trigonometry
+  sass_compiler_add_custom_function(compiler, sass_make_function("asin($x)", fn_asin, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("acos($x)", fn_acos, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("atan($x)", fn_atan, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("acsc($x)", fn_acsc, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("asec($x)", fn_asec, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("acot($x)", fn_acot, 0));
+
+  // math/inverse-hyperbolic
+  sass_compiler_add_custom_function(compiler, sass_make_function("asinh($x)", fn_asinh, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("acosh($x)", fn_acosh, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("atanh($x)", fn_atanh, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("acsch($x)", fn_acsch, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("asech($x)", fn_asech, 0));
+  sass_compiler_add_custom_function(compiler, sass_make_function("acoth($x)", fn_acoth, 0));
+
 }
