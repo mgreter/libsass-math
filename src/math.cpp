@@ -150,7 +150,7 @@ extern "C" void ADDCALL libsass_init_plugin(struct SassCompiler* compiler)
 
   // Add constants via custom headers
   sass_compiler_add_custom_header(compiler,
-    sass_make_importer(custom_header, 5000, nullptr));
+    sass_make_importer(custom_header, 5000, NULL));
 
   // math/numeric functions
   sass_compiler_add_custom_function(compiler, sass_make_function("sign($x)", fn_sign, 0));
