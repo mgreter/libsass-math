@@ -34,7 +34,7 @@ inline double acoth(double x) { return 1.0 / atanh(x); }
 
 // most functions are very simple
 #define IMPLEMENT_1_ARG_FN(fn) \
-struct SassValue* fn_##fn(struct SassValue* s_args, struct SassCompiler* comp) \
+struct SassValue* fn_##fn(struct SassValue* s_args, struct SassCompiler* comp, void*) \
 { \
   if (!sass_value_is_list(s_args)) { \
     return sass_make_error("Invalid arguments for " #fn); \
@@ -97,7 +97,7 @@ IMPLEMENT_1_ARG_FN(acoth)
 
 // so far only pow has two arguments
 #define IMPLEMENT_2_ARG_FN(fn) \
-struct SassValue* fn_##fn(struct SassValue* s_args, struct SassCompiler* comp) \
+struct SassValue* fn_##fn(struct SassValue* s_args, struct SassCompiler* comp, void*) \
 { \
   if (!sass_value_is_list(s_args)) { \
     return sass_make_error("Invalid arguments for" #fn); \
